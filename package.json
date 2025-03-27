@@ -2,9 +2,11 @@
   "name": "frc-mcap",
   "private": true,
   "type": "module",
-  "module": "index.ts",
+  "version": "0.1.0",
+  "module": "src/index.ts",
   "scripts": {
-    "build": "wireit"
+    "build": "wireit",
+    "start": "bun run ."
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -16,9 +18,9 @@
   "packageManager": "bun@1.2.6",
   "wireit": {
     "build": {
-      "command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./index.ts",
+      "command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./src/index.ts",
       "files": [
-        "index.ts",
+        "src/**/*.ts",
         "tsconfig.json"
       ],
       "packageLocks": [
@@ -28,5 +30,9 @@
         "bin/**"
       ]
     }
+  },
+  "dependencies": {
+    "clipanion": "^4.0.0-rc.4",
+    "typanion": "^3.14.0"
   }
 }
