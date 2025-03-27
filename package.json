@@ -27,5 +27,6 @@
         "bin/**"
       ]
     }
-  }
+  },
+  "packageManager": "bun@1.2.6"
 }
