@@ -1,14 +1,14 @@
-import { Command, Option } from "clipanion";
+import { Command, Option } from 'clipanion';
 
 export class ConvertCommand extends Command {
-	static paths = [["convert"]];
+	static paths = [['convert']];
 
 	static usage = Command.Usage({
-		description: "Convert WPILOG files to MCAP",
-		examples: [["Convert a WPILOG file", "$0 convert ./my-log.wpilog"]],
+		description: 'Convert WPILOG files to MCAP',
+		examples: [['Convert a WPILOG file', '$0 convert ./my-log.wpilog']],
 	});
 
-	input = Option.Rest({ required: 1, name: "input file(s)" });
+	input = Option.Rest({ required: 1, name: 'input file(s)' });
 
-	async execute(): Promise<number | void> {}
+	async execute(): Promise<void> {}
 }

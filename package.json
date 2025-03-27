@@ -1,38 +1,39 @@
 {
-  "name": "frc-mcap",
-  "private": true,
-  "type": "module",
-  "version": "0.1.0",
-  "module": "src/index.ts",
-  "scripts": {
-    "build": "wireit",
-    "start": "bun run ."
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "wireit": "^0.14.11"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "packageManager": "bun@1.2.6",
-  "wireit": {
-    "build": {
-      "command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./src/index.ts",
-      "files": [
-        "src/**/*.ts",
-        "tsconfig.json"
-      ],
-      "packageLocks": [
-        "bun.lock"
-      ],
-      "output": [
-        "bin/**"
-      ]
-    }
-  },
-  "dependencies": {
-    "clipanion": "^4.0.0-rc.4",
-    "typanion": "^3.14.0"
-  }
+	"name": "frc-mcap",
+	"private": true,
+	"type": "module",
+	"version": "0.1.0",
+	"module": "src/index.ts",
+	"scripts": {
+		"build": "wireit",
+		"lint": "wireit",
+		"lint:fix": "biome check --write",
+		"start": "bun run ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/bun": "latest",
+		"wireit": "^0.14.11"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"packageManager": "bun@1.2.6",
+	"wireit": {
+		"build": {
+			"command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./src/index.ts",
+			"files": ["src/**/*.ts", "tsconfig.json"],
+			"packageLocks": ["bun.lock"],
+			"output": ["bin/**"]
+		},
+		"lint": {
+			"command": "biome check --colors force",
+			"files": ["src/**/*.ts", "*.json"],
+			"packageLocks": ["bun.lock"]
+		}
+	},
+	"dependencies": {
+		"clipanion": "^4.0.0-rc.4",
+		"typanion": "^3.14.0"
+	}
 }
