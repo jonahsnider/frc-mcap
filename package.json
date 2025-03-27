@@ -4,9 +4,28 @@
   "type": "module",
   "private": true,
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "wireit": "^0.14.11"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "scripts": {
+    "build": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./index.ts",
+      "files": [
+        "index.ts",
+        "tsconfig.json"
+      ],
+      "packageLocks": [
+        "bun.lock"
+      ],
+      "output": [
+        "bin/**"
+      ]
+    }
   }
 }
