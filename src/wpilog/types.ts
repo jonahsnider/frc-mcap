@@ -31,6 +31,7 @@ export type WpilogRecord = {
 	  }
 	| ({
 			name: string;
+			metadata: string;
 	  } & (
 			| {
 					type: WpilogRecordType.Raw;
@@ -74,7 +75,7 @@ export enum WpilogControlRecordType {
 }
 
 export type WpilogStartControlRecord = {
-	type: WpilogControlRecordType.Start;
+	controlRecordType: WpilogControlRecordType.Start;
 	entryId: number;
 	entryName: string;
 	entryType: string;

@@ -194,7 +194,7 @@ export class WpilogReader {
 				offset.advance(entryMetadataLength);
 
 				return {
-					type,
+					controlRecordType: type,
 					entryId,
 					entryName,
 					entryType,
@@ -249,6 +249,7 @@ export class WpilogReader {
 
 			// We only catch the stream finished error here, at the start of the next record
 			// Otherwise we might conceal a bug partway through parsing a record
+      // TODO: try catch is slow, add some way to peek if there is a byte left in the stream. Probs just check if stream is closed? Can experiment
 			try {
 				recordHeaderLength = await WpilogReader.readRecordHeaderLength(inputStream);
 			} catch (error) {
@@ -267,7 +268,7 @@ export class WpilogReader {
 			if (entryId === 0) {
 				const controlRecordPayload = WpilogReader.readControlRecordPayload(payload);
 
-				switch (controlRecordPayload.type) {
+				switch (controlRecordPayload.controlRecordType) {
 					case WpilogControlRecordType.Start:
 						this.payloadParser.registerEntry(controlRecordPayload);
 						break;
