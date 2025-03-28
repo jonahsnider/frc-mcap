@@ -1,4 +1,5 @@
 import { Command, Option } from 'clipanion';
+import { WpilogReader } from '../../wpilog/wpilog-reader';
 
 export class ConvertCommand extends Command {
 	static paths = [['convert']];
@@ -8,7 +9,17 @@ export class ConvertCommand extends Command {
 		examples: [['Convert a WPILOG file', '$0 convert ./my-log.wpilog']],
 	});
 
-	input = Option.Rest({ required: 1, name: 'input file(s)' });
+	inputs = Option.Rest({ required: 1, name: 'input file(s)' });
 
-	async execute(): Promise<void> {}
+	async execute(): Promise<void> {
+		await Promise.all(
+			this.inputs.map(async (input) => {
+				const reader = new WpilogReader(Bun.file(input));
+
+				for await (const record of reader.records()) {
+					console.log(record.payload);
+				}
+			}),
+		);
+	}
 }
