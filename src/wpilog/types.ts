@@ -83,12 +83,12 @@ export type WpilogStartControlRecord = {
 };
 
 export type WpilogFinishControlRecord = {
-	type: WpilogControlRecordType.Finish;
+	controlRecordType: WpilogControlRecordType.Finish;
 	entryId: number;
 };
 
 export type WpilogSetMetadataControlRecord = {
-	type: WpilogControlRecordType.SetMetadata;
+	controlRecordType: WpilogControlRecordType.SetMetadata;
 	entryId: number;
 	entryMetadata: string;
 };
