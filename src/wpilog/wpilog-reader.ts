@@ -27,7 +27,8 @@ export class WpilogReader {
 		const magic = await buffer.readBytesAndAdvance(WpilogReader.MAGIC.byteLength);
 		assert.deepEqual(magic, WpilogReader.MAGIC, new UsageError(`${fileName} is not a WPILOG file`));
 
-		const view = new DataView((await buffer.readBytesAndAdvance(1 + 1 + 4)).buffer);
+		const chunk = await buffer.readBytesAndAdvance(1 + 1 + 4);
+		const view = new DataView(chunk.buffer, chunk.byteOffset, chunk.byteLength);
 
 		const versionMinor = view.getUint8(0);
 		const versionMajor = view.getUint8(0 + 1);
@@ -44,7 +45,8 @@ export class WpilogReader {
 	}
 
 	private static async readRecordHeaderLength(buffer: InputStream): Promise<RecordHeaderLength> {
-		const view = new DataView((await buffer.readBytesAndAdvance(1)).buffer);
+		const chunk = await buffer.readBytesAndAdvance(1);
+		const view = new DataView(chunk.buffer, chunk.byteOffset, chunk.byteLength);
 		const bitfield = view.getUint8(0);
 
 		return {
@@ -56,7 +58,8 @@ export class WpilogReader {
 	}
 
 	private static async readRecordEntryId(buffer: InputStream, headerLength: RecordHeaderLength): Promise<number> {
-		const view = new DataView((await buffer.readBytesAndAdvance(headerLength.entryIdLength)).buffer);
+		const chunk = await buffer.readBytesAndAdvance(headerLength.entryIdLength);
+		const view = new DataView(chunk.buffer, chunk.byteOffset, chunk.byteLength);
 
 		switch (headerLength.entryIdLength) {
 			case 1:
@@ -79,7 +82,8 @@ export class WpilogReader {
 	}
 
 	private static async readRecordPayloadSize(buffer: InputStream, headerLength: RecordHeaderLength): Promise<number> {
-		const view = new DataView((await buffer.readBytesAndAdvance(headerLength.payloadSizeLength)).buffer);
+		const chunk = await buffer.readBytesAndAdvance(headerLength.payloadSizeLength);
+		const view = new DataView(chunk.buffer, chunk.byteOffset, chunk.byteLength);
 
 		switch (headerLength.payloadSizeLength) {
 			case 1:
@@ -104,7 +108,8 @@ export class WpilogReader {
 	}
 
 	private static async readRecordTimestamp(buffer: InputStream, headerLength: RecordHeaderLength): Promise<bigint> {
-		const view = new DataView((await buffer.readBytesAndAdvance(headerLength.timestampLength)).buffer);
+		const chunk = await buffer.readBytesAndAdvance(headerLength.timestampLength);
+		const view = new DataView(chunk.buffer, chunk.byteOffset, chunk.byteLength);
 
 		switch (headerLength.timestampLength) {
 			case 1:
@@ -165,7 +170,7 @@ export class WpilogReader {
 
 	private static readControlRecordPayload(payload: Uint8Array): WpilogControlRecordPayload {
 		const offset = new ByteOffset();
-		const view = new DataView(payload.buffer);
+		const view = new DataView(payload.buffer, payload.byteOffset, payload.byteLength);
 
 		const type = view.getUint8(offset.get());
 		offset.advance8();

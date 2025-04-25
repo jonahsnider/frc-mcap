@@ -9,6 +9,14 @@ import {
 import { WpilogReader } from './wpilog-reader';
 
 export class PayloadParser {
+	private static normalizeEntryName(rawName: string): string {
+		if (rawName.startsWith('/')) {
+			return rawName;
+		}
+
+		return `/${rawName}`;
+	}
+
 	private static byteToBoolean(byte: number): boolean {
 		switch (byte) {
 			case 0:
@@ -36,7 +44,7 @@ export class PayloadParser {
 	parse(rawRecord: WpilogRecord): WpilogRecord {
 		assert(rawRecord.type === WpilogRecordType.Raw);
 
-		const view = new DataView(rawRecord.payload.buffer);
+		const view = new DataView(rawRecord.payload.buffer, rawRecord.payload.byteOffset, rawRecord.payload.byteLength);
 
 		const recordContext = this.context.get(rawRecord.entryId);
 
@@ -49,7 +57,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.Boolean,
 					payload: PayloadParser.byteToBoolean(view.getUint8(0)),
@@ -58,7 +66,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.Int64,
 					payload: view.getBigInt64(0, true),
@@ -67,7 +75,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.Float,
 					payload: view.getFloat32(0, true),
@@ -76,7 +84,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.Double,
 					payload: view.getFloat64(0, true),
@@ -85,7 +93,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.String,
 					payload: WpilogReader.TEXT_DECODER.decode(rawRecord.payload),
@@ -100,7 +108,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.BooleanArray,
 					payload,
@@ -109,14 +117,14 @@ export class PayloadParser {
 			case WpilogRecordType.Int64Array: {
 				const payload: bigint[] = [];
 
-				for (let i = 0; i < rawRecord.payload.byteLength; i += 4) {
+				for (let i = 0; i < rawRecord.payload.byteLength; i += 8) {
 					payload.push(view.getBigUint64(i, true));
 				}
 
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.Int64Array,
 					payload,
@@ -132,7 +140,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.FloatArray,
 					payload,
@@ -148,7 +156,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.DoubleArray,
 					payload,
@@ -174,7 +182,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.StringArray,
 					payload,
@@ -184,7 +192,7 @@ export class PayloadParser {
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
-					name: recordContext.entryName,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.Raw,
 					payload: rawRecord.payload,
@@ -192,7 +200,14 @@ export class PayloadParser {
 			}
 			// TODO: Handle custom types (structs)
 			default:
-				return rawRecord;
+				return {
+					entryId: rawRecord.entryId,
+					timestamp: rawRecord.timestamp,
+					name: PayloadParser.normalizeEntryName(recordContext.entryName),
+					metadata: recordContext.entryMetadata,
+					type: rawRecord.type,
+					payload: rawRecord.payload,
+				};
 		}
 	}
 }

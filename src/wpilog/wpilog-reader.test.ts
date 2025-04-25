@@ -6,7 +6,7 @@ test('parse record header length', async () => {
 	const buffer = new Uint8Array([0x20]);
 
 	// biome-ignore lint/complexity/useLiteralKeys: This is to access a private field
-	const result = await WpilogReader['readRecordHeaderLength'](new InputStream(buffer));
+	const result = await WpilogReader['readRecordHeaderLength'](new InputStream(new Blob([buffer]).stream()));
 
 	expect(result).toStrictEqual({
 		entryIdLength: 1,
@@ -20,7 +20,7 @@ test('parse header', async () => {
 	const buffer = new Uint8Array([0x57, 0x50, 0x49, 0x4c, 0x4f, 0x47, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00]);
 
 	// biome-ignore lint/complexity/useLiteralKeys: This is to access a private field
-	const result = await WpilogReader['readHeader'](new InputStream(buffer), 'test.wpilog');
+	const result = await WpilogReader['readHeader'](new InputStream(new Blob([buffer]).stream()), 'test.wpilog');
 
 	expect(result).toStrictEqual({
 		version: {
@@ -36,7 +36,7 @@ describe('parse record entry ID', async () => {
 		const buffer = new Uint8Array([0x01]);
 
 		// biome-ignore lint/complexity/useLiteralKeys: This is to access a private field
-		const result = await WpilogReader['readRecordEntryId'](new InputStream(buffer), {
+		const result = await WpilogReader['readRecordEntryId'](new InputStream(new Blob([buffer]).stream()), {
 			entryIdLength: 1,
 			payloadSizeLength: 1,
 			timestampLength: 3,
@@ -50,7 +50,7 @@ describe('parse record entry ID', async () => {
 		const buffer = new Uint8Array([0x01, 0x00]);
 
 		// biome-ignore lint/complexity/useLiteralKeys: This is to access a private field
-		const result = await WpilogReader['readRecordEntryId'](new InputStream(buffer), {
+		const result = await WpilogReader['readRecordEntryId'](new InputStream(new Blob([buffer]).stream()), {
 			entryIdLength: 2,
 			payloadSizeLength: 1,
 			timestampLength: 3,
@@ -64,7 +64,7 @@ describe('parse record entry ID', async () => {
 		const buffer = new Uint8Array([0x01, 0x00, 0x00]);
 
 		// biome-ignore lint/complexity/useLiteralKeys: This is to access a private field
-		const result = await WpilogReader['readRecordEntryId'](new InputStream(buffer), {
+		const result = await WpilogReader['readRecordEntryId'](new InputStream(new Blob([buffer]).stream()), {
 			entryIdLength: 3,
 			payloadSizeLength: 1,
 			timestampLength: 3,
@@ -78,7 +78,7 @@ describe('parse record entry ID', async () => {
 		const buffer = new Uint8Array([0x01, 0x00, 0x00, 0x00]);
 
 		// biome-ignore lint/complexity/useLiteralKeys: This is to access a private field
-		const result = await WpilogReader['readRecordEntryId'](new InputStream(buffer), {
+		const result = await WpilogReader['readRecordEntryId'](new InputStream(new Blob([buffer]).stream()), {
 			entryIdLength: 4,
 			payloadSizeLength: 1,
 			timestampLength: 3,
