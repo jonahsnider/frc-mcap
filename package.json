@@ -33,6 +33,10 @@
 		}
 	},
 	"dependencies": {
+		"@mcap/core": "^2.1.6",
+		"@msgpack/msgpack": "^3.1.1",
+		"@sinclair/typebox": "^0.34.31",
+		"ajv": "^8.17.1",
 		"clipanion": "^4.0.0-rc.4",
 		"typanion": "^3.14.0"
 	}
