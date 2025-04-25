@@ -23,6 +23,7 @@ export enum WpilogRecordType {
 
 export type WpilogRecord = {
 	entryId: number;
+	/** Timestamp in microseconds since FPGA boot. */
 	timestamp: bigint;
 } & (
 	| {
