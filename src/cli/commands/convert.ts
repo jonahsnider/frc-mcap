@@ -1,4 +1,8 @@
-import { Command, Option } from 'clipanion';
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import { Command, Option, UsageError } from 'clipanion';
+import { McapWriter } from '../../mcap/mcap-writer';
+import { changeExtension } from '../../util/path';
 import { WpilogReader } from '../../wpilog/wpilog-reader';
 
 export class ConvertCommand extends Command {
@@ -12,13 +16,34 @@ export class ConvertCommand extends Command {
 	inputs = Option.Rest({ required: 1, name: 'input file(s)' });
 
 	async execute(): Promise<void> {
+		// TODO: Multithread this
 		await Promise.all(
 			this.inputs.map(async (input) => {
-				const reader = new WpilogReader(Bun.file(input));
+				const inputFile = Bun.file(input);
 
-				for await (const record of reader.records()) {
-					console.log(record.payload);
+				assert(inputFile.name);
+				if (path.extname(inputFile.name) !== '.wpilog') {
+					throw new UsageError('Input file must be a WPILOG file');
 				}
+
+				const outputFile = Bun.file(changeExtension(inputFile.name, '.wpilog', '.mcap'));
+
+				const reader = new WpilogReader(inputFile);
+
+				// Bun FileSink won't clear out excess bytes already present in the file, so we delete before creating the writer
+				try {
+					await outputFile.unlink();
+				} catch (error) {
+					if (error instanceof Error && 'code' in error && typeof error.code === 'string' && error.code !== 'ENOENT') {
+						throw error;
+					}
+				}
+
+				const fileMetadata = await inputFile.stat();
+
+				const writer = new McapWriter(outputFile.writer(), fileMetadata.birthtime);
+
+				await writer.write(reader.records());
 			}),
 		);
 	}
