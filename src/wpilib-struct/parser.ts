@@ -1,25 +1,35 @@
-import { CstParser } from 'chevrotain';
+import { CstParser, type ParserMethod } from 'chevrotain';
+import type { StructSpecificationCstNode } from './generated';
 import * as Tokens from './lexer';
 
 export class StructParser extends CstParser {
-	public readonly structSpecification = this.RULE('structSpecification', () => {
-		this.MANY_SEP({ SEP: Tokens.Semicolon, DEF: () => this.SUBRULE(this.declaration) });
-	});
+	// @ts-expect-error This is safe
+	public readonly structSpecification: ParserMethod<[], StructSpecificationCstNode> = this.RULE(
+		'structSpecification',
+		() => {
+			this.MANY_SEP({ SEP: Tokens.Semicolon, DEF: () => this.SUBRULE(this.declaration) });
+		},
+	);
 
 	private readonly declaration = this.RULE('declaration', () => {
-		this.OPTION({ DEF: () => this.SUBRULE(this.enumSpecification) });
+		this.OPTION(() => this.SUBRULE(this.enumSpecification));
 
 		this.SUBRULE(this.optionalWhitespace);
 
-		this.SUBRULE1(this.typeName);
+		this.CONSUME(Tokens.Identifier);
 
-		this.OR({
-			DEF: [
-				{ ALT: () => this.SUBRULE(this.bitFieldDeclaration) },
-				{ ALT: () => this.SUBRULE(this.standardDeclarationArray) },
-				{ ALT: () => this.SUBRULE2(this.optionalWhitespace) },
-			],
-		});
+		this.SUBRULE1(this.optionalWhitespace);
+
+		this.CONSUME1(Tokens.Identifier);
+
+		this.OPTION1(() =>
+			this.OR({
+				DEF: [
+					{ ALT: () => this.SUBRULE(this.bitFieldDeclaration) },
+					{ ALT: () => this.SUBRULE(this.standardDeclarationArray) },
+				],
+			}),
+		);
 	});
 
 	private readonly standardDeclarationArray = this.RULE('standardDeclarationArray', () => {
@@ -32,19 +42,19 @@ export class StructParser extends CstParser {
 		this.SUBRULE(this.optionalWhitespace);
 		this.CONSUME(Tokens.Colon);
 		this.SUBRULE1(this.optionalWhitespace);
-		this.CONSUME1(Tokens.Integer);
+		this.CONSUME(Tokens.Integer);
 	});
 
 	private readonly arraySize = this.RULE('arraySize', () => {
 		this.CONSUME(Tokens.LeftSquareBrace);
 		this.SUBRULE(this.optionalWhitespace);
-		this.CONSUME1(Tokens.Integer);
+		this.CONSUME(Tokens.Integer);
 		this.SUBRULE1(this.optionalWhitespace);
-		this.CONSUME2(Tokens.RightSquareBrace);
+		this.CONSUME(Tokens.RightSquareBrace);
 	});
 
 	private readonly enumSpecification = this.RULE('enumSpecification', () => {
-		this.OPTION({ DEF: () => this.CONSUME(Tokens.EnumKeyword) });
+		this.OPTION(() => this.CONSUME(Tokens.EnumKeyword));
 		this.SUBRULE(this.optionalWhitespace);
 		this.CONSUME(Tokens.LeftCurlyBrace);
 		this.MANY_SEP({ SEP: Tokens.Comma, DEF: () => this.SUBRULE(this.enumMember) });
@@ -63,25 +73,7 @@ export class StructParser extends CstParser {
 	});
 
 	private readonly optionalWhitespace = this.RULE('optionalWhitespace', () => {
-		this.OPTION({ DEF: () => this.CONSUME(Tokens.WhiteSpace) });
-	});
-
-	private readonly typeName = this.RULE('typeName', () => {
-		this.OR([
-			{ ALT: () => this.CONSUME(Tokens.TypeNameBoolean) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameChar) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameInt8) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameInt16) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameInt32) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameInt64) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameUint8) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameUint16) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameUint32) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameUint64) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameFloat32) },
-			{ ALT: () => this.CONSUME(Tokens.TypeNameFloat64) },
-			{ ALT: () => this.CONSUME(Tokens.Identifier) },
-		]);
+		this.OPTION(() => this.CONSUME(Tokens.WhiteSpace));
 	});
 
 	constructor() {

@@ -18,7 +18,7 @@ export interface DeclarationCstNode extends CstNode {
 export type DeclarationCstChildren = {
   enumSpecification?: EnumSpecificationCstNode[];
   optionalWhitespace: (OptionalWhitespaceCstNode)[];
-  typeName: TypeNameCstNode[];
+  Identifier: (IToken)[];
   bitFieldDeclaration?: BitFieldDeclarationCstNode[];
   standardDeclarationArray?: StandardDeclarationArrayCstNode[];
 };
@@ -91,27 +91,6 @@ export type OptionalWhitespaceCstChildren = {
   WhiteSpace?: IToken[];
 };
 
-export interface TypeNameCstNode extends CstNode {
-  name: "typeName";
-  children: TypeNameCstChildren;
-}
-
-export type TypeNameCstChildren = {
-  TypeNameBoolean?: IToken[];
-  TypeNameChar?: IToken[];
-  TypeNameInt8?: IToken[];
-  TypeNameInt16?: IToken[];
-  TypeNameInt32?: IToken[];
-  TypeNameInt64?: IToken[];
-  TypeNameUint8?: IToken[];
-  TypeNameUint16?: IToken[];
-  TypeNameUint32?: IToken[];
-  TypeNameUint64?: IToken[];
-  TypeNameFloat32?: IToken[];
-  TypeNameFloat64?: IToken[];
-  Identifier?: IToken[];
-};
-
 export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   structSpecification(children: StructSpecificationCstChildren, param?: IN): OUT;
   declaration(children: DeclarationCstChildren, param?: IN): OUT;
@@ -121,5 +100,4 @@ export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   enumSpecification(children: EnumSpecificationCstChildren, param?: IN): OUT;
   enumMember(children: EnumMemberCstChildren, param?: IN): OUT;
   optionalWhitespace(children: OptionalWhitespaceCstChildren, param?: IN): OUT;
-  typeName(children: TypeNameCstChildren, param?: IN): OUT;
 }

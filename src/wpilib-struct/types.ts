@@ -33,7 +33,3 @@ export type StructDeclaration = {
 	arraySize?: number;
 	bitWidth?: number;
 };
-
-export type ICstNodeVisitorWithDefaults<IN, OUT> = {
-	[K in Exclude<keyof ICstNodeVisitor<IN, OUT>, keyof ICstVisitor<IN, OUT>>]?: ICstNodeVisitor<IN, OUT>[K];
-} & ICstVisitor<IN, OUT>;
