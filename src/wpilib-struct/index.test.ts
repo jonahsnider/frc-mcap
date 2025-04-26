@@ -41,6 +41,10 @@ describe('parse struct specification', () => {
 				},
 			]);
 		});
+
+		test(';;; (empty structs)', () => {
+			expect(parseStructSpecification(';;;')).toStrictEqual([]);
+		});
 	});
 
 	describe('bit-field declarations', () => {
@@ -85,6 +89,60 @@ describe('parse struct specification', () => {
 
 		test('int16 val:17 (bit field larger than storage size)', () => {
 			expect(() => parseStructSpecification('int16 val:17')).toThrowError();
+		});
+	});
+
+	describe('spec examples', () => {
+		test('int16 i; int8 x; (multiline)', () => {
+			expect(
+				parseStructSpecification(`int16 i;
+int8 x;`),
+			).toStrictEqual([
+				{
+					name: 'i',
+					value: KnownStructTypeName.Int16,
+					enumSpecification: undefined,
+					arraySize: undefined,
+					bitWidth: undefined,
+				},
+				{
+					name: 'x',
+					value: KnownStructTypeName.Int8,
+					enumSpecification: undefined,
+					arraySize: undefined,
+					bitWidth: undefined,
+				},
+			]);
+		});
+
+		test('char c; Inner s; bool b; (multiline)', () => {
+			expect(
+				parseStructSpecification(`char c;
+Inner s;
+bool b;`),
+			).toStrictEqual([
+				{
+					name: 'c',
+					value: KnownStructTypeName.Character,
+					enumSpecification: undefined,
+					arraySize: undefined,
+					bitWidth: undefined,
+				},
+				{
+					name: 's',
+					value: 'Inner',
+					enumSpecification: undefined,
+					arraySize: undefined,
+					bitWidth: undefined,
+				},
+				{
+					name: 'b',
+					value: KnownStructTypeName.Boolean,
+					enumSpecification: undefined,
+					arraySize: undefined,
+					bitWidth: undefined,
+				},
+			]);
 		});
 	});
 

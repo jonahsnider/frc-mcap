@@ -7,7 +7,7 @@ export class StructParser extends CstParser {
 	public readonly structSpecification: ParserMethod<[], StructSpecificationCstNode> = this.RULE(
 		'structSpecification',
 		() => {
-			this.MANY_SEP({ SEP: Tokens.Semicolon, DEF: () => this.SUBRULE(this.declaration) });
+			this.MANY_SEP({ SEP: Tokens.Semicolon, DEF: () => this.OPTION(() => this.SUBRULE(this.declaration)) });
 		},
 	);
 
