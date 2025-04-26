@@ -13,14 +13,12 @@ export class StructParser extends CstParser {
 
 		this.SUBRULE1(this.typeName);
 
-		this.OPTION1({
-			DEF: () =>
-				this.OR({
-					DEF: [
-						{ ALT: () => this.SUBRULE(this.bitFieldDeclaration) },
-						{ ALT: () => this.SUBRULE(this.standardDeclarationArray) },
-					],
-				}),
+		this.OR({
+			DEF: [
+				{ ALT: () => this.SUBRULE(this.bitFieldDeclaration) },
+				{ ALT: () => this.SUBRULE(this.standardDeclarationArray) },
+				{ ALT: () => this.SUBRULE2(this.optionalWhitespace) },
+			],
 		});
 	});
 
@@ -31,11 +29,10 @@ export class StructParser extends CstParser {
 	});
 
 	private readonly bitFieldDeclaration = this.RULE('bitFieldDeclaration', () => {
-		this.CONSUME(Tokens.WhiteSpace);
-		this.CONSUME1(Tokens.Identifier);
-		this.CONSUME2(Tokens.Colon);
 		this.SUBRULE(this.optionalWhitespace);
-		this.CONSUME3(Tokens.Integer);
+		this.CONSUME(Tokens.Colon);
+		this.SUBRULE1(this.optionalWhitespace);
+		this.CONSUME1(Tokens.Integer);
 	});
 
 	private readonly arraySize = this.RULE('arraySize', () => {

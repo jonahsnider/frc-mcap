@@ -17,20 +17,20 @@ export interface DeclarationCstNode extends CstNode {
 
 export type DeclarationCstChildren = {
   enumSpecification?: EnumSpecificationCstNode[];
-  optionalWhitespace: OptionalWhitespaceCstNode[];
+  optionalWhitespace: (OptionalWhitespaceCstNode)[];
   typeName: TypeNameCstNode[];
   bitFieldDeclaration?: BitFieldDeclarationCstNode[];
-  standardDeclaration?: StandardDeclarationCstNode[];
+  standardDeclarationArray?: StandardDeclarationArrayCstNode[];
 };
 
-export interface StandardDeclarationCstNode extends CstNode {
-  name: "standardDeclaration";
-  children: StandardDeclarationCstChildren;
+export interface StandardDeclarationArrayCstNode extends CstNode {
+  name: "standardDeclarationArray";
+  children: StandardDeclarationArrayCstChildren;
 }
 
-export type StandardDeclarationCstChildren = {
+export type StandardDeclarationArrayCstChildren = {
   optionalWhitespace: OptionalWhitespaceCstNode[];
-  arraySize?: ArraySizeCstNode[];
+  arraySize: ArraySizeCstNode[];
 };
 
 export interface BitFieldDeclarationCstNode extends CstNode {
@@ -39,10 +39,8 @@ export interface BitFieldDeclarationCstNode extends CstNode {
 }
 
 export type BitFieldDeclarationCstChildren = {
-  WhiteSpace: IToken[];
-  Identifier: IToken[];
+  optionalWhitespace: (OptionalWhitespaceCstNode)[];
   Colon: IToken[];
-  optionalWhitespace: OptionalWhitespaceCstNode[];
   Integer: IToken[];
 };
 
@@ -52,10 +50,10 @@ export interface ArraySizeCstNode extends CstNode {
 }
 
 export type ArraySizeCstChildren = {
-  ArraySizeOpen: IToken[];
+  LeftSquareBrace: IToken[];
   optionalWhitespace: (OptionalWhitespaceCstNode)[];
   Integer: IToken[];
-  ArraySizeClose: IToken[];
+  RightSquareBrace: IToken[];
 };
 
 export interface EnumSpecificationCstNode extends CstNode {
@@ -66,10 +64,10 @@ export interface EnumSpecificationCstNode extends CstNode {
 export type EnumSpecificationCstChildren = {
   EnumKeyword?: IToken[];
   optionalWhitespace: (OptionalWhitespaceCstNode)[];
-  EnumOpen: IToken[];
+  LeftCurlyBrace: IToken[];
   enumMember?: EnumMemberCstNode[];
   Comma?: IToken[];
-  EnumClose: IToken[];
+  RightCurlyBrace: IToken[];
 };
 
 export interface EnumMemberCstNode extends CstNode {
@@ -117,7 +115,7 @@ export type TypeNameCstChildren = {
 export interface ICstNodeVisitor<IN, OUT> extends ICstVisitor<IN, OUT> {
   structSpecification(children: StructSpecificationCstChildren, param?: IN): OUT;
   declaration(children: DeclarationCstChildren, param?: IN): OUT;
-  standardDeclaration(children: StandardDeclarationCstChildren, param?: IN): OUT;
+  standardDeclarationArray(children: StandardDeclarationArrayCstChildren, param?: IN): OUT;
   bitFieldDeclaration(children: BitFieldDeclarationCstChildren, param?: IN): OUT;
   arraySize(children: ArraySizeCstChildren, param?: IN): OUT;
   enumSpecification(children: EnumSpecificationCstChildren, param?: IN): OUT;
