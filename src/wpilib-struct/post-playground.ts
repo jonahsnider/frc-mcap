@@ -11,3 +11,5 @@ const transformed = `(() => {${contents.replaceAll(CHEVROTAIN_IMPORT_REGEXP, (_,
 })}})();`;
 
 await OUTPUT_FILE.write(transformed);
+
+console.log(OUTPUT_FILE.name);
