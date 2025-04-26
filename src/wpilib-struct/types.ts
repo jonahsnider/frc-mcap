@@ -1,6 +1,3 @@
-import type { ICstVisitor } from 'chevrotain';
-import type { ICstNodeVisitor } from './generated';
-
 export enum KnownStructTypeName {
 	Boolean = 'bool',
 	Character = 'char',
