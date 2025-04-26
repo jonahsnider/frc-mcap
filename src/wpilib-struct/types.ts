@@ -1,4 +1,7 @@
-export enum StructTypeName {
+import type { ICstVisitor } from 'chevrotain';
+import type { ICstNodeVisitor } from './generated';
+
+export enum KnownStructTypeName {
 	Boolean = 'bool',
 	Character = 'char',
 	Int8 = 'int8',
@@ -10,11 +13,27 @@ export enum StructTypeName {
 	Uint32 = 'uint32',
 	Uint64 = 'uint64',
 	Float32 = 'float32',
-	/** Equivalent to {@link StructTypeName.Float32} */
+	/** Equivalent to {@link KnownStructTypeName.Float32} */
 	Float = 'float',
 	Float64 = 'float64',
-	/** Equivalent to {@link StructTypeName.Float64} */
+	/** Equivalent to {@link KnownStructTypeName.Float64} */
 	Double = 'double',
 }
 
+export type StructTypeName = KnownStructTypeName | string;
+
 export type EnumSpecification = Map<string, bigint>;
+
+export type StructSpecification = StructDeclaration[];
+
+export type StructDeclaration = {
+	name: string;
+	value: StructTypeName;
+	enumSpecification?: EnumSpecification;
+	arraySize?: number;
+	bitWidth?: number;
+};
+
+export type ICstNodeVisitorWithDefaults<IN, OUT> = {
+	[K in Exclude<keyof ICstNodeVisitor<IN, OUT>, keyof ICstVisitor<IN, OUT>>]?: ICstNodeVisitor<IN, OUT>[K];
+} & ICstVisitor<IN, OUT>;

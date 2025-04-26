@@ -7,7 +7,10 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": []
+		"ignore": [
+			"src/wpilib-struct/generated.d.ts",
+			"src/wpilib-struct/playground.ts"
+		]
 	},
 	"formatter": {
 		"enabled": true,

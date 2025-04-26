@@ -1,14 +1,25 @@
 {
 	"name": "frc-mcap",
+	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"version": "0.1.0",
 	"module": "src/index.ts",
 	"scripts": {
 		"build": "wireit",
+		"transform:chevrotain-playground": "wireit",
+		"generate": "wireit",
 		"lint": "wireit",
 		"lint:fix": "biome check --write",
 		"start": "bun run ."
+	},
+	"dependencies": {
+		"@mcap/core": "^2.1.6",
+		"@msgpack/msgpack": "^3.1.1",
+		"@sinclair/typebox": "^0.34.31",
+		"ajv": "^8.17.1",
+		"chevrotain": "11.0.3",
+		"clipanion": "^4.0.0-rc.4",
+		"typanion": "^3.14.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
@@ -20,24 +31,42 @@
 	},
 	"packageManager": "bun@1.2.6",
 	"wireit": {
+		"generate": {
+			"command": "bun run ./src/wpilib-struct/codegen.ts",
+			"files": ["src/wpilib-struct/*.ts", "tsconfig.json"],
+			"packageLocks": ["bun.lock"],
+			"output": ["src/wpilib-struct/generated.d.ts"]
+		},
 		"build": {
 			"command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./src/index.ts",
 			"files": ["src/**/*.ts", "tsconfig.json"],
 			"packageLocks": ["bun.lock"],
+			"dependencies": ["generate"],
 			"output": ["bin/**"]
+		},
+		"build:chevrotain-playground": {
+			"command": "bun build --target=browser --packages=external --outfile dist/chevrotain-playground.js ./src/wpilib-struct/playground.ts",
+			"files": ["src/wpilib-struct/*.ts", "tsconfig.json"],
+			"packageLocks": ["bun.lock"],
+			"output": ["dist/chevrotain-playground.js"]
+		},
+		"transform:chevrotain-playground": {
+			"dependencies": ["build:chevrotain-playground"],
+			"command": "bun run src/wpilib-struct/post-playground.ts",
+			"files": [
+				"dist/chevrotain-playground.js",
+				"src/wpilib-struct/post-playground.ts",
+				"tsconfig.json"
+			],
+			"packageLocks": ["bun.lock"],
+			"output": ["dist/chevrotain-playground.js"],
+			"clean": false
 		},
 		"lint": {
 			"command": "biome check --colors force",
-			"files": ["src/**/*.ts", "*.json"],
-			"packageLocks": ["bun.lock"]
+			"files": ["src/**/*.ts", "*.json", "!src/wpilib-struct/generated.d.ts"],
+			"packageLocks": ["bun.lock"],
+			"output": []
 		}
-	},
-	"dependencies": {
-		"@mcap/core": "^2.1.6",
-		"@msgpack/msgpack": "^3.1.1",
-		"@sinclair/typebox": "^0.34.31",
-		"ajv": "^8.17.1",
-		"clipanion": "^4.0.0-rc.4",
-		"typanion": "^3.14.0"
 	}
 }
