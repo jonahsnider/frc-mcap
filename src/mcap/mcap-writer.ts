@@ -13,7 +13,7 @@ export class McapWriter {
 
 	private static parseWpilogMetadata(metadata: string): Map<string, string> {
 		try {
-			const json = JSON.parse(metadata);
+			const json = JSON.parse(metadata) as unknown;
 
 			if (typeof json === 'object' && json !== null) {
 				return new Map(Object.entries(json));
