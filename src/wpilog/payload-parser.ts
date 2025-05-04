@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { ByteOffset } from '../util/byte-offset';
+import type { StructDecodeQueue } from './struct-decode-queue';
+import { StructRegistry } from './struct-registry';
 import {
 	type WpilogFinishControlRecord,
 	type WpilogRecord,
@@ -9,6 +11,9 @@ import {
 import { WpilogReader } from './wpilog-reader';
 
 export class PayloadParser {
+	private static readonly STRUCT_PREFIX = 'struct:';
+	private static readonly STRUCT_ARRAY_SUFFIX = '[]';
+
 	private static normalizeEntryName(rawName: string): string {
 		if (rawName.startsWith('/')) {
 			return rawName;
@@ -28,6 +33,12 @@ export class PayloadParser {
 		}
 	}
 
+	private readonly structRegistry;
+
+	constructor(structDecodeQueue: StructDecodeQueue) {
+		this.structRegistry = new StructRegistry(structDecodeQueue);
+	}
+
 	private readonly context = new Map<
 		WpilogStartControlRecord['entryId'],
 		Pick<WpilogStartControlRecord, 'entryName' | 'entryType' | 'entryMetadata'>
@@ -41,7 +52,7 @@ export class PayloadParser {
 		this.context.delete(payload.entryId);
 	}
 
-	parse(rawRecord: WpilogRecord): WpilogRecord {
+	parse(rawRecord: WpilogRecord): WpilogRecord | string {
 		assert(rawRecord.type === WpilogRecordType.Raw);
 
 		const view = new DataView(rawRecord.payload.buffer, rawRecord.payload.byteOffset, rawRecord.payload.byteLength);
@@ -89,15 +100,24 @@ export class PayloadParser {
 					type: WpilogRecordType.Double,
 					payload: view.getFloat64(0, true),
 				};
-			case WpilogRecordType.String:
+			case WpilogRecordType.StructSchema:
+			case WpilogRecordType.String: {
+				const structName = recordContext.entryName.slice('/.schema/'.length + PayloadParser.STRUCT_PREFIX.length);
+				const payload = WpilogReader.TEXT_DECODER.decode(rawRecord.payload);
+
+				if (recordContext.entryType === WpilogRecordType.StructSchema) {
+					this.structRegistry.register(structName, payload);
+				}
+
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
 					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
 					type: WpilogRecordType.String,
-					payload: WpilogReader.TEXT_DECODER.decode(rawRecord.payload),
+					payload: payload,
 				};
+			}
 			case WpilogRecordType.BooleanArray: {
 				const payload: boolean[] = [];
 
@@ -198,16 +218,48 @@ export class PayloadParser {
 					payload: rawRecord.payload,
 				};
 			}
-			// TODO: Handle custom types (structs)
-			default:
+			default: {
+				// TODO: Unknown types aren't necessarily structs (ex. a JSON string)
+
+				if (recordContext.entryType.endsWith(PayloadParser.STRUCT_ARRAY_SUFFIX)) {
+					const normalizedStructName = recordContext.entryType.slice(
+						PayloadParser.STRUCT_PREFIX.length,
+						-PayloadParser.STRUCT_ARRAY_SUFFIX.length,
+					);
+					const decodedOrBlockingStructName = this.structRegistry.decodeArray(normalizedStructName, rawRecord.payload);
+
+					if (typeof decodedOrBlockingStructName === 'string') {
+						return decodedOrBlockingStructName;
+					}
+
+					return {
+						entryId: rawRecord.entryId,
+						timestamp: rawRecord.timestamp,
+						name: PayloadParser.normalizeEntryName(recordContext.entryName),
+						metadata: recordContext.entryMetadata,
+						type: WpilogRecordType.StructArray,
+						structName: normalizedStructName,
+						payload: decodedOrBlockingStructName,
+					};
+				}
+
+				const normalizedStructName = recordContext.entryType.slice(PayloadParser.STRUCT_PREFIX.length);
+				const decodedOrBlockingStructName = this.structRegistry.decode(normalizedStructName, rawRecord.payload);
+
+				if (typeof decodedOrBlockingStructName === 'string') {
+					return decodedOrBlockingStructName;
+				}
+
 				return {
 					entryId: rawRecord.entryId,
 					timestamp: rawRecord.timestamp,
 					name: PayloadParser.normalizeEntryName(recordContext.entryName),
 					metadata: recordContext.entryMetadata,
-					type: rawRecord.type,
-					payload: rawRecord.payload,
+					type: WpilogRecordType.Struct,
+					structName: normalizedStructName,
+					payload: decodedOrBlockingStructName,
 				};
+			}
 		}
 	}
 }

@@ -1,11 +1,19 @@
 import { lexer } from './lexer';
 import { parser } from './parser';
-import type { StructSpecification } from './types';
+import type { StructDeclaration } from './types';
 import { StructAstVisitor } from './visitors/struct-ast-visitor';
 
 const structAstVisitor = new StructAstVisitor();
 
-export function parseStructSpecification(declaration: string): StructSpecification {
+const cache = new Map<string, StructDeclaration[]>();
+
+export function parseStructSpecification(declaration: string): StructDeclaration[] {
+	const existing = cache.get(declaration);
+
+	if (existing) {
+		return existing;
+	}
+
 	const lexingResult = lexer.tokenize(declaration);
 
 	if (lexingResult.errors.length > 0) {
@@ -20,5 +28,7 @@ export function parseStructSpecification(declaration: string): StructSpecificati
 		throw new AggregateError(parser.errors, 'Failed to parse struct specification');
 	}
 
-	return structAstVisitor.structSpecification(cstNode.children);
+	const created = structAstVisitor.structSpecification(cstNode.children);
+	cache.set(declaration, created);
+	return created;
 }

@@ -8,13 +8,7 @@ import type {
 	StandardDeclarationArrayCstChildren,
 	StructSpecificationCstChildren,
 } from '../generated';
-import {
-	type EnumSpecification,
-	KnownStructTypeName,
-	type StructDeclaration,
-	type StructSpecification,
-	type StructTypeName,
-} from '../types';
+import { type EnumSpecification, KnownStructTypeName, type StructDeclaration, type StructTypeName } from '../types';
 import { BaseStructVisitorWithDefaults } from './visitors';
 
 export class StructAstVisitor extends BaseStructVisitorWithDefaults {
@@ -24,7 +18,7 @@ export class StructAstVisitor extends BaseStructVisitorWithDefaults {
 		this.validateVisitor();
 	}
 
-	structSpecification(children: StructSpecificationCstChildren): StructSpecification {
+	structSpecification(children: StructSpecificationCstChildren): StructDeclaration[] {
 		return children.declaration?.map((declaration) => this.declaration(declaration.children)) ?? [];
 	}
 

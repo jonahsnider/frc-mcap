@@ -22,6 +22,7 @@ export class SchemaRegistry {
 	}
 
 	getSchema(type: string): TAnySchema {
+		// TODO: Construct schemas from struct specifications
 		const schema = this.schemas.get(type) ?? Type.Any({ title: type, description: `Unknown type: ${type}` });
 
 		const valid = this.ajv.validateSchema(schema, true);
@@ -36,8 +37,6 @@ export class SchemaRegistry {
 
 		if (!valid) {
 			assert(this.ajv.errors);
-
-			console.log({ type, value });
 
 			throw new RangeError(`Failed validation for type ${type}: ${this.ajv.errorsText(this.ajv.errors)}`);
 		}

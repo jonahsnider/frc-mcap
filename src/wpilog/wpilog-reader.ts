@@ -4,6 +4,7 @@ import { UsageError } from 'clipanion';
 import { ByteOffset } from '../util/byte-offset';
 import { InputStream, StreamFinishedError } from '../util/input-stream';
 import { PayloadParser } from './payload-parser';
+import { StructDecodeQueue } from './struct-decode-queue';
 import {
 	type WpilogControlRecordPayload,
 	WpilogControlRecordType,
@@ -234,8 +235,12 @@ export class WpilogReader {
 		}
 	}
 
-	private readonly payloadParser = new PayloadParser();
+	private readonly structDecodeQueue = new StructDecodeQueue((structName, records) => {
+		this.asyncDecodedStructs.push(...records);
+	});
+	private readonly payloadParser = new PayloadParser(this.structDecodeQueue);
 
+	private readonly asyncDecodedStructs: WpilogRecord[] = [];
 	private header: WpilogHeader | undefined;
 
 	constructor(private readonly file: BunFile) {}
@@ -289,7 +294,7 @@ export class WpilogReader {
 					payload: controlRecordPayload,
 				};
 			} else {
-				yield this.payloadParser.parse({
+				const partialRecord: WpilogRecord = {
 					entryId,
 					timestamp,
 					type: WpilogRecordType.Raw,
@@ -297,8 +302,18 @@ export class WpilogReader {
 					// These will be populated by the payload parser
 					name: '',
 					metadata: '',
-				});
+				};
+				const parsedOrBlockingStructName = this.payloadParser.parse(partialRecord);
+
+				if (typeof parsedOrBlockingStructName === 'string') {
+					// Can't decode struct until another schema is defined
+				} else {
+					yield parsedOrBlockingStructName;
+				}
 			}
+
+			yield* this.asyncDecodedStructs;
+			this.asyncDecodedStructs.length = 0;
 		}
 	}
 }

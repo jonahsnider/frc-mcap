@@ -13,13 +13,23 @@ export enum WpilogRecordType {
 	Float = 'float',
 	Double = 'double',
 	String = 'string',
+	StructSchema = 'structschema',
 	BooleanArray = 'boolean[]',
 	Int64Array = 'int64[]',
 	FloatArray = 'float[]',
 	DoubleArray = 'double[]',
 	StringArray = 'string[]',
 	ControlRecord = 0,
+	Struct = 1,
+	StructArray = 2,
 }
+
+export type StructPayload = Map<
+	string,
+	number | boolean | bigint | string | StructPayload | number[] | boolean[] | bigint[] | StructPayload[]
+>;
+
+export type StructPayloadValue = StructPayload extends Map<unknown, infer ValueType> ? ValueType : never;
 
 export type WpilogRecord = {
 	entryId: number;
@@ -66,6 +76,8 @@ export type WpilogRecord = {
 			| { type: WpilogRecordType.FloatArray; payload: number[] }
 			| { type: WpilogRecordType.DoubleArray; payload: number[] }
 			| { type: WpilogRecordType.StringArray; payload: string[] }
+			| { type: WpilogRecordType.Struct; structName: string; payload: StructPayload }
+			| { type: WpilogRecordType.StructArray; structName: string; payload: StructPayload[] }
 	  ))
 );
 

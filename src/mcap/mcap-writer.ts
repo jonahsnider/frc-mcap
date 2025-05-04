@@ -1,6 +1,7 @@
 import { McapWriter as Mcap } from '@mcap/core';
-import msgpack from '@msgpack/msgpack';
+import * as msgpack from '@msgpack/msgpack';
 import type { FileSink } from 'bun';
+import type { Temporal } from 'temporal-polyfill';
 import { type WpilogRecord, WpilogRecordType } from '../wpilog/types';
 import { FileSinkWritable } from './file-sink-writable';
 import { jsonBigIntReplacer } from './json-replacer';
@@ -17,7 +18,7 @@ export class McapWriter {
 	constructor(
 		private readonly output: FileSink,
 		/** The time the log was created, used to calculate timestamps. */
-		private readonly logCreation: Date,
+		private readonly logCreation: Temporal.Instant,
 	) {
 		this.writer = new Mcap({
 			writable: new FileSinkWritable(output),
@@ -38,26 +39,26 @@ export class McapWriter {
 
 			const channel = await this.getChannel(record);
 
-			const timestampMilliseconds = BigInt(this.logCreation.getTime()) + record.timestamp / 1_000n;
-			const timestampNanos = timestampMilliseconds * 1_000_000n;
+			const entryCreation = this.logCreation.add({ microseconds: Number(record.timestamp) });
 
 			const message = {
 				value: record.payload,
 			};
 
+			const jsonString = JSON.stringify(message, jsonBigIntReplacer);
 			// TODO: This needs to be better optimized
 			// Super hacky workaround for bigint validation/serialization
-			this.schemaRegistry.validateMessage(record.type, JSON.parse(JSON.stringify(message, jsonBigIntReplacer)));
+			this.schemaRegistry.validateMessage(this.getTypeString(record), JSON.parse(jsonString));
 
 			const data =
 				record.type === WpilogRecordType.Raw
 					? msgpack.encode(message, { useBigInt64: true })
-					: McapWriter.TEXT_ENCODER.encode(JSON.stringify(message, jsonBigIntReplacer));
+					: McapWriter.TEXT_ENCODER.encode(jsonString);
 
 			await this.writer.addMessage({
 				channelId: channel,
-				publishTime: timestampNanos,
-				logTime: timestampNanos,
+				publishTime: entryCreation.epochNanoseconds,
+				logTime: entryCreation.epochNanoseconds,
 				sequence: 0,
 				data,
 			});
@@ -73,7 +74,7 @@ export class McapWriter {
 			return existing;
 		}
 
-		const schema = await this.getSchema(record.type);
+		const schema = await this.getSchema(this.getTypeString(record));
 
 		const createdChannel = await this.writer.registerChannel({
 			topic: record.name,
@@ -116,5 +117,11 @@ export class McapWriter {
 
 		this.schemas.set(type, createdSchema);
 		return createdSchema;
+	}
+
+	private getTypeString(record: Exclude<WpilogRecord, { type: WpilogRecordType.ControlRecord }>): string {
+		return record.type === WpilogRecordType.Struct || record.type === WpilogRecordType.StructArray
+			? record.structName
+			: record.type;
 	}
 }
