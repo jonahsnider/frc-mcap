@@ -10,6 +10,19 @@ import { McapMessageEncoding, McapSchemaEncoding } from './types';
 
 export class McapWriter {
 	private static readonly TEXT_ENCODER = new TextEncoder();
+
+	private static parseWpilogMetadata(metadata: string): Map<string, string> {
+		try {
+			const json = JSON.parse(metadata);
+
+			if (typeof json === 'object' && json !== null) {
+				return new Map(Object.entries(json));
+			}
+		} catch {}
+
+		return new Map([['raw_wpilog_metadata', metadata]]);
+	}
+
 	private readonly writer: Mcap;
 	private readonly schemaRegistry: SchemaRegistry = new SchemaRegistry();
 	private readonly schemas: Map<string, number> = new Map();
@@ -78,9 +91,7 @@ export class McapWriter {
 
 		const createdChannel = await this.writer.registerChannel({
 			topic: record.name,
-			// TODO: Include metadata, make a helper function that returns a Map from a record (with error handling for invalid json)
-			// metadata: new Map(Object.entries(JSON.parse(record.metadata))),
-			metadata: new Map(),
+			metadata: McapWriter.parseWpilogMetadata(record.metadata),
 			messageEncoding: record.type === WpilogRecordType.Raw ? McapMessageEncoding.Msgpack : McapMessageEncoding.Json,
 			schemaId: schema,
 		});
