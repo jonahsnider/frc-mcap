@@ -17,7 +17,6 @@ export class ConvertCommand extends Command {
 	inputs = Option.Rest({ required: 1, name: 'input file(s)' });
 
 	async execute(): Promise<void> {
-		// TODO: Multithread this
 		await Promise.all(
 			this.inputs.map(async (input) => {
 				const inputFile = Bun.file(input);
