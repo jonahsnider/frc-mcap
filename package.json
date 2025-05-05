@@ -41,7 +41,7 @@
 			"output": ["src/wpilib-struct/generated.d.ts"]
 		},
 		"build": {
-			"command": "bun build --compile --minify --sourcemap --bytecode --outfile bin/frc-mcap ./src/index.ts",
+			"command": "bun build --compile --minify --sourcemap --outfile bin/frc-mcap ./src/index.ts",
 			"files": ["src/**/*.ts", "tsconfig.json"],
 			"packageLocks": ["bun.lock"],
 			"dependencies": ["generate"],
