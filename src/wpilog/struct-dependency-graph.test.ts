@@ -52,13 +52,4 @@ describe('struct dependency graph', () => {
 		graph.registerSchema('B', ['C']);
 		expect(graph.getDependencies('A')).toStrictEqual(new Set(['A', 'B', 'C', 'D']));
 	});
-
-	test('get missing dependencies', () => {
-		const graph = new StructDependencyGraph();
-
-		graph.registerSchema('A', ['B']);
-		graph.registerSchema('B', ['C']);
-
-		expect(graph.getMissingDependencies('A')).toStrictEqual(new Set(['C']));
-	});
 });

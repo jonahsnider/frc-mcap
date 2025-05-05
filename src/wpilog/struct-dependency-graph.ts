@@ -69,12 +69,10 @@ export class StructDependencyGraph {
 	}
 
 	getDecodableStructs(): Iterable<string> {
-		return this.allDependencies.keys().filter((structName) => this.getMissingDependencies(structName).size === 0);
-	}
+		return this.allDependencies.keys().filter((structName) => {
+			const dependencies = this.getDependencies(structName);
 
-	getMissingDependencies(name: string): Set<string> {
-		const dependencies = this.getDependencies(name);
-
-		return dependencies.difference(this.allDependencies);
+			return dependencies.isSubsetOf(this.allDependencies);
+		});
 	}
 }
