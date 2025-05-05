@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
-import { parseStructSpecification } from '.';
-import { KnownStructTypeName } from './types';
+import { parseStructSpecification } from './index.js';
+import { KnownStructTypeName } from './types.js';
 
 describe('parse struct specification', () => {
 	describe('standard declarations', () => {

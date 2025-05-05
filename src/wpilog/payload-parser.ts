@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import { ByteOffset } from '../util/byte-offset';
-import type { StructDecodeQueue } from './struct-decode-queue';
-import { StructRegistry } from './struct-registry';
+import { ByteOffset } from '../util/byte-offset.js';
+import type { StructDecodeQueue } from './struct-decode-queue.js';
+import { StructRegistry } from './struct-registry.js';
 import {
 	type WpilogFinishControlRecord,
 	type WpilogRecord,
 	WpilogRecordType,
 	type WpilogStartControlRecord,
-} from './types';
-import { WpilogReader } from './wpilog-reader';
+} from './types.js';
+import { WpilogReader } from './wpilog-reader.js';
 
 export class PayloadParser {
 	public static readonly STRUCT_PREFIX = 'struct:';

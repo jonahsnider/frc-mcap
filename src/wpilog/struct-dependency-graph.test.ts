@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { StructDependencyGraph } from './struct-dependency-graph';
+import { StructDependencyGraph } from './struct-dependency-graph.js';
 
 describe('struct dependency graph', () => {
 	test('A', () => {

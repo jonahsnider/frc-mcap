@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { ByteOffset } from '../util/byte-offset';
-import { parseStructSpecification } from '../wpilib-struct';
-import { KnownStructTypeName, type StructDeclaration, type StructSpecification } from '../wpilib-struct/types';
-import { PayloadParser } from './payload-parser';
-import type { StructDecodeQueue } from './struct-decode-queue';
-import type { StructPayload } from './types';
+import { ByteOffset } from '../util/byte-offset.js';
+import { parseStructSpecification } from '../wpilib-struct/index.js';
+import { KnownStructTypeName, type StructDeclaration, type StructSpecification } from '../wpilib-struct/types.js';
+import { PayloadParser } from './payload-parser.js';
+import type { StructDecodeQueue } from './struct-decode-queue.js';
+import type { StructPayload } from './types.js';
 
 export class StructRegistry {
 	private static readonly TEXT_DECODER = new TextDecoder('utf-8');

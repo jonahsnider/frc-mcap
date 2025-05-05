@@ -1,7 +1,7 @@
-import { lexer } from './lexer';
-import { parser } from './parser';
-import type { StructDeclaration } from './types';
-import { StructAstVisitor } from './visitors/struct-ast-visitor';
+import { lexer } from './lexer.js';
+import { parser } from './parser.js';
+import type { StructDeclaration } from './types.js';
+import { StructAstVisitor } from './visitors/struct-ast-visitor.js';
 
 const structAstVisitor = new StructAstVisitor();
 

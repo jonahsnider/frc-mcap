@@ -1,7 +1,9 @@
+#!/usr/bin/env bun
+
 import { Builtins, Cli } from 'clipanion';
-import { ConvertCommand } from './cli/commands/convert';
-import { LiveCommand } from './cli/commands/live';
-import { CLI_CONFIG } from './cli/config';
+import { ConvertCommand } from './cli/commands/convert.js';
+import { LiveCommand } from './cli/commands/live.js';
+import { CLI_CONFIG } from './cli/config.js';
 
 const cli = new Cli(CLI_CONFIG);
 

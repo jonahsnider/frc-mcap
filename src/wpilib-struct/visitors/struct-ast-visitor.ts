@@ -7,9 +7,9 @@ import type {
 	EnumSpecificationCstChildren,
 	StandardDeclarationArrayCstChildren,
 	StructSpecificationCstChildren,
-} from '../generated';
-import { type EnumSpecification, KnownStructTypeName, type StructDeclaration, type StructTypeName } from '../types';
-import { BaseStructVisitorWithDefaults } from './visitors';
+} from '../generated.js';
+import { type EnumSpecification, KnownStructTypeName, type StructDeclaration, type StructTypeName } from '../types.js';
+import { BaseStructVisitorWithDefaults } from './visitors.js';
 
 export class StructAstVisitor extends BaseStructVisitorWithDefaults {
 	constructor() {

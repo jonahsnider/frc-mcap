@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from 'bun:test';
-import { StructDecodeQueue } from './struct-decode-queue';
-import { type WpilogRecord, WpilogRecordType } from './types';
+import { StructDecodeQueue } from './struct-decode-queue.js';
+import { type WpilogRecord, WpilogRecordType } from './types.js';
 
 describe('struct decode queue', () => {
 	test('waits for struct definition before processing queued records', () => {

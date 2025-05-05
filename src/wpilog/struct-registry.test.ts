@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
-import { StructDecodeQueue } from './struct-decode-queue';
-import { StructRegistry } from './struct-registry';
-import type { StructPayload, StructPayloadValue } from './types';
+import { StructDecodeQueue } from './struct-decode-queue.js';
+import { StructRegistry } from './struct-registry.js';
+import type { StructPayload, StructPayloadValue } from './types.js';
 
 describe('calculate byte size', () => {
 	test('bool value', () => {

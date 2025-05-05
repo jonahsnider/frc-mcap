@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { Command, Option, UsageError } from 'clipanion';
 import { Temporal } from 'temporal-polyfill';
-import { McapWriter } from '../../mcap/mcap-writer';
-import { changeExtension } from '../../util/path';
-import { WpilogReader } from '../../wpilog/wpilog-reader';
+import { McapWriter } from '../../mcap/mcap-writer.js';
+import { changeExtension } from '../../util/path.js';
+import { WpilogReader } from '../../wpilog/wpilog-reader.js';
 
 export class ConvertCommand extends Command {
 	static paths = [['convert']];

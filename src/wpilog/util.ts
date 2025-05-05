@@ -1,4 +1,4 @@
-import type { StructPayload } from './types';
+import type { StructPayload } from './types.js';
 
 export function structPayloadToJson(payload: StructPayload): object {
 	const result: Record<string, unknown> = {};

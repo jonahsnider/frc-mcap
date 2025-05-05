@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
-import type { StructPayload, StructPayloadValue } from './types';
-import { structPayloadToJson } from './util';
+import type { StructPayload, StructPayloadValue } from './types.js';
+import { structPayloadToJson } from './util.js';
 
 describe('struct payload to JSON', () => {
 	test('Translation2d', () => {

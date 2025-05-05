@@ -3,36 +3,38 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"module": "src/index.ts",
+	"module": "dist/src/index.js",
+	"bin": "./dist/src/index.js",
 	"scripts": {
 		"build": "wireit",
-		"transform:chevrotain-playground": "wireit",
 		"generate": "wireit",
 		"lint": "wireit",
 		"lint:fix": "biome check --write",
-		"start": "bun run ."
+		"start": "bun run .",
+		"transform:chevrotain-playground": "wireit"
 	},
 	"dependencies": {
 		"@jonahsnider/util": "11.0.0",
-		"@mcap/core": "^2.1.6",
-		"@msgpack/msgpack": "^3.1.1",
-		"@sinclair/typebox": "^0.34.31",
-		"ajv": "^8.17.1",
+		"@mcap/core": "2.1.6",
+		"@msgpack/msgpack": "3.1.1",
+		"@sinclair/typebox": "0.34.31",
+		"ajv": "8.17.1",
 		"better-ajv-errors": "1.2.0",
 		"chevrotain": "11.0.3",
-		"clipanion": "^4.0.0-rc.4",
+		"clipanion": "4.0.0-rc.4",
 		"temporal-polyfill": "0.3.0",
-		"typanion": "^3.14.0"
+		"typanion": "3.14.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
-		"@types/bun": "latest",
-		"wireit": "^0.14.11"
-	},
-	"peerDependencies": {
-		"typescript": "^5"
+		"@types/bun": "1.2.12",
+		"typescript": "5.8.3",
+		"wireit": "0.14.11"
 	},
 	"packageManager": "bun@1.2.6",
+	"patchedDependencies": {
+		"better-ajv-errors@1.2.0": "patches/better-ajv-errors@1.2.0.patch"
+	},
 	"wireit": {
 		"generate": {
 			"command": "bun run ./src/wpilib-struct/codegen.ts",
@@ -41,11 +43,11 @@
 			"output": ["src/wpilib-struct/generated.d.ts"]
 		},
 		"build": {
-			"command": "bun build --compile --minify --sourcemap --outfile bin/frc-mcap ./src/index.ts",
-			"files": ["src/**/*.ts", "tsconfig.json"],
+			"command": "tsc",
+			"files": ["src/**/*.ts", "tsconfig.json", "package.json"],
 			"packageLocks": ["bun.lock"],
 			"dependencies": ["generate"],
-			"output": ["bin/**"]
+			"output": ["dist/**"]
 		},
 		"build:chevrotain-playground": {
 			"command": "bun build --target=browser --packages=external --outfile dist/chevrotain-playground.js ./src/wpilib-struct/playground.ts",
@@ -71,8 +73,5 @@
 			"packageLocks": ["bun.lock"],
 			"output": []
 		}
-	},
-	"patchedDependencies": {
-		"better-ajv-errors@1.2.0": "patches/better-ajv-errors@1.2.0.patch"
 	}
 }

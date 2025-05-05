@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import type { BunFile } from 'bun';
 import { UsageError } from 'clipanion';
-import { ByteOffset } from '../util/byte-offset';
-import { InputStream, StreamFinishedError } from '../util/input-stream';
-import { PayloadParser } from './payload-parser';
-import { StructDecodeQueue } from './struct-decode-queue';
+import { ByteOffset } from '../util/byte-offset.js';
+import { InputStream, StreamFinishedError } from '../util/input-stream.js';
+import { PayloadParser } from './payload-parser.js';
+import { StructDecodeQueue } from './struct-decode-queue.js';
 import {
 	type WpilogControlRecordPayload,
 	WpilogControlRecordType,
 	type WpilogHeader,
 	type WpilogRecord,
 	WpilogRecordType,
-} from './types';
+} from './types.js';
 
 type RecordHeaderLength = {
 	entryIdLength: number;

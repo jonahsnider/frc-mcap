@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
-import { InputStream } from '../util/input-stream';
-import { WpilogReader } from './wpilog-reader';
+import { InputStream } from '../util/input-stream.js';
+import { WpilogReader } from './wpilog-reader.js';
 
 test('parse record header length', async () => {
 	const buffer = new Uint8Array([0x20]);

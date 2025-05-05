@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { KnownStructTypeName } from '../wpilib-struct/types';
+import { KnownStructTypeName } from '../wpilib-struct/types.js';
 
 const EMPTY_SET: Set<never> = new Set();
 

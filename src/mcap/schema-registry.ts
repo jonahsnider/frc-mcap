@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { type TAnySchema, type TArray, type TObject, Type } from '@sinclair/typebox';
-import Ajv from 'ajv';
-import type { ValidateFunction } from 'ajv/dist/core';
+import { Ajv } from 'ajv';
+import type { ValidateFunction } from 'ajv/dist/core.js';
 import betterAjvErrors from 'better-ajv-errors';
-import { KnownStructTypeName } from '../wpilib-struct/types';
-import { PayloadParser } from '../wpilog/payload-parser';
-import type { StructRegistry } from '../wpilog/struct-registry';
-import { WpilogRecordType } from '../wpilog/types';
+import { KnownStructTypeName } from '../wpilib-struct/types.js';
+import { PayloadParser } from '../wpilog/payload-parser.js';
+import type { StructRegistry } from '../wpilog/struct-registry.js';
+import { WpilogRecordType } from '../wpilog/types.js';
 
 type SchemaEntry = {
 	schema: TAnySchema;
@@ -79,7 +79,7 @@ export class SchemaRegistry {
 		if (!valid) {
 			assert(validateFunction.errors);
 
-			console.error(betterAjvErrors(schema, value, validateFunction.errors));
+			console.error(betterAjvErrors.default(schema, value, validateFunction.errors));
 
 			throw new RangeError('Invalid struct data provided');
 		}

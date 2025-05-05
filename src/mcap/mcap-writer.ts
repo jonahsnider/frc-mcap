@@ -2,13 +2,13 @@ import { McapWriter as Mcap } from '@mcap/core';
 import * as msgpack from '@msgpack/msgpack';
 import type { FileSink } from 'bun';
 import type { Temporal } from 'temporal-polyfill';
-import type { StructRegistry } from '../wpilog/struct-registry';
-import { type WpilogDataRecord, type WpilogRecord, WpilogRecordType } from '../wpilog/types';
-import { structPayloadToJson } from '../wpilog/util';
-import { FileSinkWritable } from './file-sink-writable';
-import { jsonBigIntReplacer } from './json-replacer';
-import { SchemaRegistry } from './schema-registry';
-import { McapMessageEncoding, McapSchemaEncoding } from './types';
+import type { StructRegistry } from '../wpilog/struct-registry.js';
+import { type WpilogDataRecord, type WpilogRecord, WpilogRecordType } from '../wpilog/types.js';
+import { structPayloadToJson } from '../wpilog/util.js';
+import { FileSinkWritable } from './file-sink-writable.js';
+import { jsonBigIntReplacer } from './json-replacer.js';
+import { SchemaRegistry } from './schema-registry.js';
+import { McapMessageEncoding, McapSchemaEncoding } from './types.js';
 
 export class McapWriter {
 	private static readonly TEXT_ENCODER = new TextEncoder();

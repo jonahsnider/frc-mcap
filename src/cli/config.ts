@@ -1,8 +1,8 @@
 import type { CliOptions } from 'clipanion';
-import { version } from '../../package.json';
+import pkg from '../../package.json' with { type: 'json' };
 
 export const CLI_CONFIG = {
 	binaryLabel: 'frc-mcap',
 	binaryName: 'frc-mcap',
-	binaryVersion: `v${version}`,
+	binaryVersion: `v${pkg.version}`,
 } as const satisfies Partial<CliOptions>;

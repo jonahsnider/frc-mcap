@@ -1,5 +1,5 @@
-import { StructDependencyGraph } from './struct-dependency-graph';
-import type { WpilogRecord } from './types';
+import { StructDependencyGraph } from './struct-dependency-graph.js';
+import type { WpilogRecord } from './types.js';
 
 export class StructDecodeQueue {
 	private readonly graph = new StructDependencyGraph();
