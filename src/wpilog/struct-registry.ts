@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { ByteOffset } from '../util/byte-offset';
 import { parseStructSpecification } from '../wpilib-struct';
 import { KnownStructTypeName, type StructDeclaration, type StructSpecification } from '../wpilib-struct/types';
+import { PayloadParser } from './payload-parser';
 import type { StructDecodeQueue } from './struct-decode-queue';
 import type { StructPayload } from './types';
 
@@ -33,7 +34,8 @@ export class StructRegistry {
 	}
 
 	decodeArray(structName: string, payload: Uint8Array): StructPayload[] | string {
-		const structByteLengthOrBlocker = this.getByteLength(structName);
+		const structNameWithoutSuffix = structName.slice(0, -PayloadParser.STRUCT_ARRAY_SUFFIX.length);
+		const structByteLengthOrBlocker = this.getByteLength(structNameWithoutSuffix);
 
 		if (typeof structByteLengthOrBlocker === 'string') {
 			return structByteLengthOrBlocker;
@@ -45,10 +47,12 @@ export class StructRegistry {
 		const result: StructPayload[] = [];
 
 		for (let i = 0; i < elements; i++) {
-			const decodedInnerStructOrBlockingStructName = this.decode(structName, payload, offset);
+			const decodedInnerStructOrBlockingStructName = this.decode(structNameWithoutSuffix, payload, offset);
 			assert(
 				typeof decodedInnerStructOrBlockingStructName !== 'string',
-				new TypeError(`Expected struct ${structName} to be defined if the byte length calculation succeeded`),
+				new TypeError(
+					`Expected struct ${structNameWithoutSuffix} to be defined if the byte length calculation succeeded`,
+				),
 			);
 			result.push(decodedInnerStructOrBlockingStructName);
 		}

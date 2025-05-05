@@ -81,6 +81,8 @@ export type WpilogRecord = {
 	  ))
 );
 
+export type WpilogDataRecord = Exclude<WpilogRecord, { type: WpilogRecordType.ControlRecord }>;
+
 export enum WpilogControlRecordType {
 	Start = 0,
 	Finish = 1,

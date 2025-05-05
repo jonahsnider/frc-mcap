@@ -2,7 +2,10 @@ import { McapWriter as Mcap } from '@mcap/core';
 import * as msgpack from '@msgpack/msgpack';
 import type { FileSink } from 'bun';
 import type { Temporal } from 'temporal-polyfill';
-import { type WpilogRecord, WpilogRecordType } from '../wpilog/types';
+import { PayloadParser } from '../wpilog/payload-parser';
+import type { StructRegistry } from '../wpilog/struct-registry';
+import { type WpilogDataRecord, type WpilogRecord, WpilogRecordType } from '../wpilog/types';
+import { structPayloadToJson } from '../wpilog/util';
 import { FileSinkWritable } from './file-sink-writable';
 import { jsonBigIntReplacer } from './json-replacer';
 import { SchemaRegistry } from './schema-registry';
@@ -24,7 +27,7 @@ export class McapWriter {
 	}
 
 	private readonly writer: Mcap;
-	private readonly schemaRegistry: SchemaRegistry = new SchemaRegistry();
+	private readonly schemaRegistry: SchemaRegistry;
 	private readonly schemas: Map<string, number> = new Map();
 	private readonly channels: Map<number, number> = new Map();
 
@@ -32,6 +35,7 @@ export class McapWriter {
 		private readonly output: FileSink,
 		/** The time the log was created, used to calculate timestamps. */
 		private readonly logCreation: Temporal.Instant,
+		structRegistry: StructRegistry,
 	) {
 		this.writer = new Mcap({
 			writable: new FileSinkWritable(output),
@@ -40,6 +44,7 @@ export class McapWriter {
 			useChunkIndex: true,
 			useMessageIndex: true,
 		});
+		this.schemaRegistry = new SchemaRegistry(structRegistry);
 	}
 
 	async write(records: AsyncIterable<WpilogRecord>): Promise<void> {
@@ -54,14 +59,13 @@ export class McapWriter {
 
 			const entryCreation = this.logCreation.add({ microseconds: Number(record.timestamp) });
 
-			const message = {
-				value: record.payload,
-			};
+			const message = this.recordToMessage(record);
 
 			const jsonString = JSON.stringify(message, jsonBigIntReplacer);
+
 			// TODO: This needs to be better optimized
 			// Super hacky workaround for bigint validation/serialization
-			this.schemaRegistry.validateMessage(this.getTypeString(record), JSON.parse(jsonString));
+			this.schemaRegistry.validateMessage(this.getTypeString(record), JSON.parse(jsonString), false);
 
 			const data =
 				record.type === WpilogRecordType.Raw
@@ -78,6 +82,21 @@ export class McapWriter {
 		}
 
 		await this.writer.end();
+	}
+
+	private recordToMessage(record: WpilogDataRecord): object {
+		switch (record.type) {
+			case WpilogRecordType.Struct:
+				return structPayloadToJson(record.payload);
+			case WpilogRecordType.StructArray:
+				return {
+					value: record.payload.map((elementPayload) => structPayloadToJson(elementPayload)),
+				};
+			default:
+				return {
+					value: record.payload,
+				};
+		}
 	}
 
 	private async getChannel(record: Exclude<WpilogRecord, { type: WpilogRecordType.ControlRecord }>): Promise<number> {
@@ -118,7 +137,7 @@ export class McapWriter {
 			return createdSchema;
 		}
 
-		const jsonSchema = this.schemaRegistry.getSchema(type);
+		const jsonSchema = this.schemaRegistry.getSchema(type, false);
 
 		const createdSchema = await this.writer.registerSchema({
 			encoding: McapSchemaEncoding.JsonSchema,
@@ -131,8 +150,13 @@ export class McapWriter {
 	}
 
 	private getTypeString(record: Exclude<WpilogRecord, { type: WpilogRecordType.ControlRecord }>): string {
-		return record.type === WpilogRecordType.Struct || record.type === WpilogRecordType.StructArray
-			? record.structName
-			: record.type;
+		switch (record.type) {
+			case WpilogRecordType.Struct:
+			case WpilogRecordType.StructArray:
+				return record.structName;
+			// return record.structName + PayloadParser.STRUCT_ARRAY_SUFFIX;
+			default:
+				return record.type;
+		}
 	}
 }

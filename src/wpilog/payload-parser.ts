@@ -11,8 +11,8 @@ import {
 import { WpilogReader } from './wpilog-reader';
 
 export class PayloadParser {
-	private static readonly STRUCT_PREFIX = 'struct:';
-	private static readonly STRUCT_ARRAY_SUFFIX = '[]';
+	public static readonly STRUCT_PREFIX = 'struct:';
+	public static readonly STRUCT_ARRAY_SUFFIX = '[]';
 
 	private static normalizeEntryName(rawName: string): string {
 		if (rawName.startsWith('/')) {
@@ -33,7 +33,7 @@ export class PayloadParser {
 		}
 	}
 
-	private readonly structRegistry;
+	public readonly structRegistry;
 
 	constructor(structDecodeQueue: StructDecodeQueue) {
 		this.structRegistry = new StructRegistry(structDecodeQueue);
@@ -222,10 +222,7 @@ export class PayloadParser {
 				// TODO: Unknown types aren't necessarily structs (ex. a JSON string)
 
 				if (recordContext.entryType.endsWith(PayloadParser.STRUCT_ARRAY_SUFFIX)) {
-					const normalizedStructName = recordContext.entryType.slice(
-						PayloadParser.STRUCT_PREFIX.length,
-						-PayloadParser.STRUCT_ARRAY_SUFFIX.length,
-					);
+					const normalizedStructName = recordContext.entryType.slice(PayloadParser.STRUCT_PREFIX.length);
 					const decodedOrBlockingStructName = this.structRegistry.decodeArray(normalizedStructName, rawRecord.payload);
 
 					if (typeof decodedOrBlockingStructName === 'string') {

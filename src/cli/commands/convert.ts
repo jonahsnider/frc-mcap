@@ -44,6 +44,7 @@ export class ConvertCommand extends Command {
 				const writer = new McapWriter(
 					outputFile.writer(),
 					Temporal.Instant.fromEpochMilliseconds(fileMetadata.birthtime.getTime()),
+					reader.payloadParser.structRegistry,
 				);
 
 				await writer.write(reader.records());

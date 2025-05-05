@@ -238,7 +238,7 @@ export class WpilogReader {
 	private readonly structDecodeQueue = new StructDecodeQueue((structName, records) => {
 		this.asyncDecodedStructs.push(...records);
 	});
-	private readonly payloadParser = new PayloadParser(this.structDecodeQueue);
+	public readonly payloadParser = new PayloadParser(this.structDecodeQueue);
 
 	private readonly asyncDecodedStructs: WpilogRecord[] = [];
 	private header: WpilogHeader | undefined;
