@@ -2,7 +2,6 @@ import { McapWriter as Mcap } from '@mcap/core';
 import * as msgpack from '@msgpack/msgpack';
 import type { FileSink } from 'bun';
 import type { Temporal } from 'temporal-polyfill';
-import { PayloadParser } from '../wpilog/payload-parser';
 import type { StructRegistry } from '../wpilog/struct-registry';
 import { type WpilogDataRecord, type WpilogRecord, WpilogRecordType } from '../wpilog/types';
 import { structPayloadToJson } from '../wpilog/util';
@@ -65,7 +64,7 @@ export class McapWriter {
 
 			// TODO: This needs to be better optimized
 			// Super hacky workaround for bigint validation/serialization
-			this.schemaRegistry.validateMessage(this.getTypeString(record), JSON.parse(jsonString), false);
+			this.schemaRegistry.validateMessage(this.getTypeString(record), JSON.parse(jsonString));
 
 			const data =
 				record.type === WpilogRecordType.Raw
@@ -137,7 +136,7 @@ export class McapWriter {
 			return createdSchema;
 		}
 
-		const jsonSchema = this.schemaRegistry.getSchema(type, false);
+		const jsonSchema = this.schemaRegistry.getSchema(type);
 
 		const createdSchema = await this.writer.registerSchema({
 			encoding: McapSchemaEncoding.JsonSchema,

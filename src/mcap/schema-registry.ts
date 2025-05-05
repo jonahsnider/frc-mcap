@@ -68,12 +68,12 @@ export class SchemaRegistry {
 		this.registerSchema(KnownStructTypeName.Double, Type.Number({ title: 'double' }), true);
 	}
 
-	getSchema(type: string, nested: boolean): TAnySchema {
-		return this.getEntry(type, nested).schema;
+	getSchema(type: string): TAnySchema {
+		return this.getEntry(type, false).schema;
 	}
 
-	validateMessage(type: string, value: unknown, nested: boolean): void {
-		const { schema, validateFunction } = this.getEntry(type, nested);
+	validateMessage(type: string, value: unknown): void {
+		const { schema, validateFunction } = this.getEntry(type, false);
 		const valid = validateFunction(value);
 
 		if (!valid) {
