@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import { concatIterables } from '@jonahsnider/util';
 import { KnownStructTypeName } from '../wpilib-struct/types';
 
 const EMPTY_SET: Set<never> = new Set();
