@@ -144,53 +144,16 @@ export class SchemaRegistry {
 		};
 	}
 
-	private structMemberBaseValueToSchema(valueTypeName: string): TAnySchema {
-		switch (valueTypeName) {
-			case KnownStructTypeName.Boolean:
-				return Type.Boolean({ title: 'boolean' });
-			case KnownStructTypeName.Character:
-				return Type.String({ title: 'char' });
-			case KnownStructTypeName.Int8:
-				return Type.Integer({ title: 'int8' });
-			case KnownStructTypeName.Int16:
-				return Type.Integer({ title: 'int16' });
-			case KnownStructTypeName.Int32:
-				return Type.Integer({ title: 'int32' });
-			case KnownStructTypeName.Int64:
-				return Type.Integer({ title: 'int64' });
-			case KnownStructTypeName.Uint8:
-				return Type.Integer({ title: 'uint8' });
-			case KnownStructTypeName.Uint16:
-				return Type.Integer({ title: 'uint16' });
-			case KnownStructTypeName.Uint32:
-				return Type.Integer({ title: 'uint32' });
-			case KnownStructTypeName.Uint64:
-				return Type.Integer({ title: 'uint64' });
-			case KnownStructTypeName.Float32:
-			case KnownStructTypeName.Float:
-				return Type.Number({ title: 'float' });
-			case KnownStructTypeName.Float64:
-			case KnownStructTypeName.Double:
-				return Type.Number({ title: 'double' });
-			default:
-				return this.getEntry(valueTypeName, true).schema;
-		}
-	}
-
 	private structMemberValueToSchema(valueTypeName: string, array: boolean): TAnySchema {
 		if (valueTypeName === KnownStructTypeName.Character && array) {
 			return Type.String({ title: 'string' });
 		}
 
-		const baseSchema = this.structMemberBaseValueToSchema(valueTypeName);
-
 		if (array) {
-			return Type.Array(baseSchema, {
-				name: valueTypeName + PayloadParser.STRUCT_ARRAY_SUFFIX,
-			});
+			return this.getEntry(valueTypeName + PayloadParser.STRUCT_ARRAY_SUFFIX, true).schema;
 		}
 
-		return baseSchema;
+		return this.getEntry(valueTypeName, true).schema;
 	}
 
 	private registerSchema(typeName: string, schema: TAnySchema, nested: boolean): SchemaEntry {
