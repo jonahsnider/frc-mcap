@@ -63,7 +63,7 @@ export class StructAstVisitor extends BaseStructVisitorWithDefaults {
 			case KnownStructTypeName.Uint64:
 				break;
 			default:
-				assert(false, new RangeError('Enums must be integers'));
+				throw new RangeError('Enums must be integers');
 		}
 
 		const entries = children.enumMember?.map((member) => this.enumMember(member.children));
@@ -105,7 +105,7 @@ export class StructAstVisitor extends BaseStructVisitorWithDefaults {
 				assert(parsed <= 64, new RangeError('64-bit bit-field members must be less than 64 bits'));
 				break;
 			default:
-				assert(false, new RangeError('Bit-field members must be integers or booleans'));
+				throw new RangeError('Bit-field members must be integers or booleans');
 		}
 
 		return parsed;
