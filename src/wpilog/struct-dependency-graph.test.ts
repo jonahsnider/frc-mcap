@@ -33,14 +33,13 @@ describe('struct dependency graph', () => {
 		expect(dependencies).toStrictEqual(new Set(['A', 'B', 'C']));
 	});
 
-	test.todo('A -> B -> C -> A (circular dependency)', () => {
+	test('A -> B -> C -> A (circular dependency)', () => {
 		const graph = new StructDependencyGraph();
 
 		graph.registerSchema('A', ['B']);
 		graph.registerSchema('B', ['C']);
-		graph.registerSchema('C', ['A']);
 
-		expect(() => graph.getDependencies('A')).toThrowError();
+		expect(() => graph.registerSchema('C', ['A'])).toThrowError();
 	});
 
 	test('A -> B, A -> C, C -> D, B -> C', () => {

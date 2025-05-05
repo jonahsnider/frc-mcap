@@ -17,8 +17,30 @@ export class StructDependencyGraph {
 				existing.add(innerStructName);
 			}
 		} else {
-			this.allDependencies.set(name, new Set(concatIterables([name], innerStructNames)));
+			this.allDependencies.set(name, new Set(innerStructNames));
 		}
+
+		// Check for cycles in the graph using DFS
+		assert(!this.hasCycle(name), new RangeError(`Cycle detected in the dependency graph for ${name}`));
+	}
+
+	private hasCycle(current: string, path = new Set<string>()): boolean {
+		if (path.has(current)) {
+			return true;
+		}
+		path.add(current);
+		const directDependencies = this.allDependencies.get(current);
+		if (directDependencies) {
+			for (const dep of directDependencies) {
+				const hasCycle = this.hasCycle(dep, path);
+				if (hasCycle) {
+					return hasCycle;
+				}
+			}
+		}
+		path.delete(current);
+
+		return false;
 	}
 
 	getDependencies(name: string): ReadonlySet<string> {
