@@ -79,8 +79,6 @@ export class SchemaRegistry {
 		if (!valid) {
 			assert(validateFunction.errors);
 
-			console.log('failed to validate message for', type, 'with schema', schema);
-
 			console.error(betterAjvErrors(schema, value, validateFunction.errors));
 
 			throw new RangeError('Invalid struct data provided');
