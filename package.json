@@ -10,7 +10,7 @@
 		"generate": "wireit",
 		"lint": "wireit",
 		"lint:fix": "biome check --write",
-		"start": "bun run .",
+		"start": "bun run ./src/index.ts",
 		"transform:chevrotain-playground": "wireit"
 	},
 	"dependencies": {
