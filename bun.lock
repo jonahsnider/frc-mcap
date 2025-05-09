@@ -19,7 +19,7 @@
         "@biomejs/biome": "1.9.4",
         "@types/bun": "1.2.12",
         "typescript": "5.8.3",
-        "wireit": "0.14.11",
+        "wireit": "0.14.12",
       },
     },
   },
@@ -193,6 +193,6 @@
 
     "undici-types": ["undici-types@6.20.0", "", {}, "sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg=="],
 
-    "wireit": ["wireit@0.14.11", "", { "dependencies": { "brace-expansion": "^4.0.0", "chokidar": "^3.5.3", "fast-glob": "^3.2.11", "jsonc-parser": "^3.0.0", "proper-lockfile": "^4.1.2" }, "bin": { "wireit": "bin/wireit.js" } }, "sha512-edO3AiL1wYlBIapwx8e1OGEmsG37sv7qnRzx4YDsMPcKo+6NMOjWYcfRbaeoB1MzakLrnozWB2Q1q7Ko45NckA=="],
+    "wireit": ["wireit@0.14.12", "", { "dependencies": { "brace-expansion": "^4.0.0", "chokidar": "^3.5.3", "fast-glob": "^3.2.11", "jsonc-parser": "^3.0.0", "proper-lockfile": "^4.1.2" }, "bin": { "wireit": "bin/wireit.js" } }, "sha512-gNSd+nZmMo6cuICezYXRIayu6TSOeCSCDzjSF0q6g8FKDsRbdqrONrSZYzdk/uBISmRcv4vZtsno6GyGvdXwGA=="],
   }
 }
