@@ -7,7 +7,7 @@
         "@jonahsnider/util": "11.0.0",
         "@mcap/core": "2.1.6",
         "@msgpack/msgpack": "3.1.1",
-        "@sinclair/typebox": "0.34.31",
+        "@sinclair/typebox": "0.34.33",
         "ajv": "8.17.1",
         "better-ajv-errors": "1.2.0",
         "chevrotain": "11.0.3",
@@ -75,7 +75,7 @@
 
     "@nodelib/fs.walk": ["@nodelib/fs.walk@1.2.8", "", { "dependencies": { "@nodelib/fs.scandir": "2.1.5", "fastq": "^1.6.0" } }, "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="],
 
-    "@sinclair/typebox": ["@sinclair/typebox@0.34.31", "", {}, "sha512-qQ71T9DsITbX3dVCrcBERbs11YuSMg3wZPnT472JhqhWGPdiLgyvihJXU8m+ADJtJvRdjATIiACJD22dEknBrQ=="],
+    "@sinclair/typebox": ["@sinclair/typebox@0.34.33", "", {}, "sha512-5HAV9exOMcXRUxo+9iYB5n09XxzCXnfy4VTNW4xnDv+FgjzAGY989C28BIdljKqmF+ZltUwujE3aossvcVtq6g=="],
 
     "@types/bun": ["@types/bun@1.2.12", "", { "dependencies": { "bun-types": "1.2.12" } }, "sha512-lY/GQTXDGsolT/TiH72p1tuyUORuRrdV7VwOTOjDOt8uTBJQOJc5zz3ufwwDl0VBaoxotSk4LdP0hhjLJ6ypIQ=="],
 
