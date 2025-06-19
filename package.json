@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"@jonahsnider/util": "11.0.0",
-		"@mcap/core": "2.1.6",
+		"@mcap/core": "2.1.7",
 		"@msgpack/msgpack": "3.1.2",
 		"@sinclair/typebox": "0.34.33",
 		"ajv": "8.17.1",
