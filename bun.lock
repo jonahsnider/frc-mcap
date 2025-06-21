@@ -5,7 +5,7 @@
       "name": "frc-mcap",
       "dependencies": {
         "@jonahsnider/util": "11.0.0",
-        "@mcap/core": "2.1.6",
+        "@mcap/core": "2.1.7",
         "@msgpack/msgpack": "3.1.2",
         "@sinclair/typebox": "0.34.33",
         "ajv": "8.17.1",
@@ -62,7 +62,7 @@
 
     "@jonahsnider/util": ["@jonahsnider/util@11.0.0", "", {}, "sha512-PlH3+YwibBfsqSi1n6JekZMNOkQtr1hlgjDPu8qE/UY/56C3AAUfbUV3ExGFSa3mbwg0UB7g+3WvybM99leDmQ=="],
 
-    "@mcap/core": ["@mcap/core@2.1.6", "", { "dependencies": { "@foxglove/crc": "^0.0.3", "heap-js": "^2.2.0", "tslib": "^2.5.0" } }, "sha512-b3/pEjyS22bFgFMWIMcc+DhO47EOlvvHFC1eiO4O+i78ctFgikMz7xanjFuBQwZyVC5jJWlpOkn8sA/AXoYZLg=="],
+    "@mcap/core": ["@mcap/core@2.1.7", "", { "dependencies": { "@foxglove/crc": "^0.0.3", "heap-js": "^2.2.0", "tslib": "^2.5.0" } }, "sha512-lp+ZfJ/wKCyB9+vzc5yWe9CfnKa7Vh4nN99yazEjp9eC5DG6ACvGaNWQfQsrOC+3QraAWIY912pCwBWrY31QLQ=="],
 
     "@msgpack/msgpack": ["@msgpack/msgpack@3.1.2", "", {}, "sha512-JEW4DEtBzfe8HvUYecLU9e6+XJnKDlUAIve8FvPzF3Kzs6Xo/KuZkZJsDH0wJXl/qEZbeeE7edxDNY3kMs39hQ=="],
 
