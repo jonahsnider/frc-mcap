@@ -28,7 +28,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@types/bun": "1.2.18",
-		"typescript": "5.8.3",
+		"typescript": "5.9.3",
 		"wireit": "0.14.12"
 	},
 	"packageManager": "bun@1.2.6",
