@@ -1,10 +1,11 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "frc-mcap",
       "dependencies": {
-        "@jonahsnider/util": "12.0.0",
+        "@jonahsnider/util": "13.0.0",
         "@mcap/core": "2.1.6",
         "@msgpack/msgpack": "3.1.2",
         "@sinclair/typebox": "0.34.33",
@@ -60,7 +61,7 @@
 
     "@humanwhocodes/momoa": ["@humanwhocodes/momoa@2.0.4", "", {}, "sha512-RE815I4arJFtt+FVeU1Tgp9/Xvecacji8w/V6XtXsWWH/wz/eNkNbhb+ny/+PlVZjV0rxQpRSQKNKE3lcktHEA=="],
 
-    "@jonahsnider/util": ["@jonahsnider/util@12.0.0", "", {}, "sha512-83YFLqiIGEkLSOWgb+DXgNOBB6I5Bha3815CIjyJ6++b5EgRoTfGpHK/NEMWzzqZ695NZWetZ/WFTy2OuUxzww=="],
+    "@jonahsnider/util": ["@jonahsnider/util@13.0.0", "", {}, "sha512-YqwYSSmrVvUPJfg4CeqJ1wO2guc8aHKKNEAUMwu1OR8w2MUKqZi70jyjD98WN/6Vu1JEQDBoAPpkbkpCCmuV4Q=="],
 
     "@mcap/core": ["@mcap/core@2.1.6", "", { "dependencies": { "@foxglove/crc": "^0.0.3", "heap-js": "^2.2.0", "tslib": "^2.5.0" } }, "sha512-b3/pEjyS22bFgFMWIMcc+DhO47EOlvvHFC1eiO4O+i78ctFgikMz7xanjFuBQwZyVC5jJWlpOkn8sA/AXoYZLg=="],
 
