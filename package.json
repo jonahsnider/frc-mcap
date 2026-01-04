@@ -20,7 +20,7 @@
 		"@sinclair/typebox": "0.34.33",
 		"ajv": "8.17.1",
 		"better-ajv-errors": "2.0.2",
-		"chevrotain": "11.0.3",
+		"chevrotain": "11.1.0",
 		"clipanion": "4.0.0-rc.4",
 		"temporal-polyfill": "0.3.0",
 		"typanion": "3.14.0"
